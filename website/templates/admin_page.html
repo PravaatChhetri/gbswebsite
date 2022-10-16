@@ -1,56 +1,38 @@
 {%extends 'index.html'%}
 
 {%block holder%}
-  <div class="container-fluid p-0">
-    <!-- header -->
-    <div class="container-fluid col-12 text-center m-0"
-      style="background:url(img/blog.jpeg) fixed no-repeat; background-size: cover;background-position: center; height: 300px;">
-      <h1 class="text" style="padding-top: 4%;"> Blog</h1>
-    </div>
-<!-- end header -->
 {%endblock%}
 {%block content%}
-<nav class="navbar navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Offcanvas navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-      <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Offcanvas</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+<div class="container-fluid" style="background-color: rgb(23, 23, 23);">
+ 
+    <div class="container-fluid">
+      <div class="d-flex row col-sm-12  align-items-center">
+        <div class="container-fluid col-md-3 col-sm-12">
+          <div class="nav fs-4 text-start flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <button class="nav-link btn-outline-light active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Register Members</button>
+            <button class="nav-link btn-outline-light" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Create Blog</button>
+            <button class="nav-link btn-outline-light" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Edit Blog</button>
+            <button class="nav-link btn-outline-light" id="v-pills-booking-tab" data-bs-toggle="pill" data-bs-target="#v-pills-booking" type="button" role="tab" aria-controls="v-pills-bookings" aria-selected="false">Make Booking</button>
+            <button class="nav-link btn-outline-light" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Edit Booking</button>
+            <button class="nav-link btn-outline-light" id="v-pills-ground-tab" data-bs-toggle="pill" data-bs-target="#v-pills-ground" type="button" role="tab" aria-controls="v-pills-ground" aria-selected="false">Create Ground</button>
+            
+            
+          </div>
+        </div>
+        <div class="tab-content col-md-9 col-sm-12 text-center bg-black" id="v-pills-tabContent">
+          <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab" tabindex="0">
+          {%include 'register.html'%}
+          </div>
+          <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab" tabindex="0">   {%include 'createBlog.html'%}</div>
+          <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab" tabindex="0">...</div>
+          <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab" tabindex="0">...</div>
+          <div class="tab-pane fade" id="v-pills-booking" role="tabpanel" aria-labelledby="v-pills-booking-tab" tabindex="0">Booking</div>
+          <div class="tab-pane fade" id="v-pills-ground" role="tabpanel" aria-labelledby="v-pills-ground-tab" tabindex="0">Ground</div>
+
+        </div>
       </div>
-      <div class="offcanvas-body">
-        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Dropdown
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
-          </li>
-        </ul>
-        <form class="d-flex mt-3" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
-      </div>
-    </div>
   </div>
-</nav>
+</div>
 {%endblock%}
 
 

@@ -27,7 +27,7 @@ def booking():
 
 @app.route('/gamesCouncillor-Dashboard')
 def admin():
-    return render_template('admin_page.html',data={})    
+    return render_template('admin_page.html',data={})  
 
 @app.route('/User-Dashboard')
 def studentDash():
