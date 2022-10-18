@@ -1,7 +1,7 @@
 from random import choices
 from secrets import choice
 from flask_wtf import FlaskForm
-from wtforms import StringField,PasswordField,DateField,DateTimeField,FileField, TextAreaField,SelectField,BooleanField,IntegerField, SubmitField
+from wtforms import StringField,PasswordField,DateField,DateTimeField,FileField, TextAreaField,SelectField,BooleanField,IntegerField,FloatField, SubmitField
 from wtforms.validators import DataRequired,Email
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 #choices
@@ -15,7 +15,7 @@ class RegistrationForm(FlaskForm):
     role = SelectField('Role', validators=[DataRequired()])
     year = SelectField('Year' ,validators=[DataRequired()])
     dept = SelectField('Department', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+    submit = SubmitField('Register')
 
 
 class LoginForm(FlaskForm):
@@ -38,13 +38,15 @@ class BlogForm(FlaskForm):
 class GroundForm(FlaskForm):
     groundName = StringField('Ground Name', validators=[DataRequired()])
     NoOfCourt = IntegerField('No Of Court', validators=[DataRequired()])
-    bookTime = StringField('Book Time', validators=[DataRequired()])
-    submit = SubmitField('Submit')
+    bookTime = FloatField('Game Duration(Hours)', validators=[DataRequired()])
+    submit = SubmitField('Create')
 
 
 class BookingForm(FlaskForm):
-    groundName = StringField('Ground Name', validators=[DataRequired()])
-    courtName = StringField('Court Name', validators=[DataRequired()])
+    groundName = SelectField('Ground', validators=[DataRequired()])
+    team_1=SelectField('Team 1', validators=[DataRequired()])
+    team_2=SelectField('Team 2', validators=[DataRequired()])
+    courtName = SelectField('Court', validators=[DataRequired()])
     date = DateField('Date', validators=[DataRequired()])
     time = SelectField('Time' ,validators=[DataRequired()])
-    submit = SubmitField('Submit')
+    submit = SubmitField('Book Now')

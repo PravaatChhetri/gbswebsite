@@ -1,4 +1,4 @@
-<!-- <div class="card bg-dark mx-auto my-5 py-5" style="width: 550px; box-shadow: 0 0 20px white;" >
+<div class="card bg-dark mx-auto my-5 py-5" style="width: 550px; box-shadow: 0 0 20px white;" >
     <section class="" >
         <div class="container col-12" >
           <div class="row mx-auto">
@@ -6,31 +6,29 @@
       
               <div class="d-flex align-items-center h-custom-2 mx-auto mt-3" style="width: 400px;">
       
-                <form class="mx-auto" method="post" style="width: 23rem;">
-                    {{reg.hidden_tag()}}
-                  <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Member Registration</h3>
+                <form class="text-start" method="post" style="width: 23rem;">
+                    {{detail.G.Ground.hidden_tag()}}
+                  <h3 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Create Ground</h3>
       
                   <div class="form-outline mb-3">
-                    {{reg.email.label(class="text-start")}}
-                    {{reg.email(class="form-control bg-dark text-light form-control-lg")}}
+                    {{detail.G.Ground.groundName.label(class="text-start")}}
+                    {{detail.G.Ground.groundName(class="form-control bg-dark text-light form-control-lg")}}
 
                   </div>
       
                   <div class="form-outline mb-3">
-                    {{reg.role.label(class="text-start")}}
-                    {{reg.role(class="form-select bg-dark text-light ")}}
+                    {{detail.G.Ground.NoOfCourt.label(class="text-start")}}
+                    {{detail.G.Ground.NoOfCourt(class="form-control bg-dark text-light ")}}
                   </div>
-                  <div class="row mb-3">
-                    {{reg.year.label(class="text-start")}}
-                    {{reg.year(class="form-select mb-3 bg-dark text-light " )}}
+                  <div class="form-outline mb-3">
+                    {{detail.G.Ground.bookTime.label(class="text-start")}}
+                    {{detail.G.Ground.bookTime(class="form-control mb-3 bg-dark text-light " )}}
                
-                      {{reg.dept.label(class="text-start")}}
-                      {{reg.dept(class="form-select mb-3 bg-dark text-light")}}
-                  
+              
                   </div>
       
-                  <div class="pt-1 mt-4 mb-4">
-                    {{reg.submit(class="btn btn-outline-light btn-lg btn-block")}}
+                  <div class="pt-1 mt-4 mb-4 text-start">
+                    {{detail.G.Ground.submit(class="btn btn-outline-light btn-lg btn-block")}}
                   </div>
       
       
@@ -43,4 +41,4 @@
           </div>
         </div>
       </section>
-</div> -->
+</div>
