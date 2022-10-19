@@ -18,7 +18,7 @@
     <div class="row my-3">
       {%for x in data.blogs %}
           
-      <div class="col-lg-3 col-sm-12 my-xl-5 mx-3">
+      <div class="col-lg-3 col-sm-12 my-5 mx-2">
         <div class="card bg-dark" >
           <img src="/blog/img/{{x.BId}}" class="card-img-top" alt="..." />
           <div class="card-body">
@@ -26,7 +26,7 @@
             <p class="card-text">
               {{x.author}}
             </p>
-            <a href="{{x.date_created}}" class="btn btn-outline-light">Learn More</a>
+            <a href="/blog/{{x.BId}}" class="btn btn-outline-light">Learn More</a>
           </div>
         </div>
       </div>

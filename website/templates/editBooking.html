@@ -18,18 +18,19 @@
                 </tr>
               </thead>
               <tbody>
-                {%for x in data.bookings%}
-                <tr>
-                  <th scope="row">{{x.ground}}</th>
-                  <td>{{x.team_1}}</td>
-                  <td>{{x.team_2}}</td>
-                  <td>{{x.courtName}}</td>
-                  <td>{{x.date}}</td>
-                  <td>{{x.time}}</td>
-                  <td><Button class="btn btn-info" ><a class="nav-link" href="/editBooking/{{x.bId}}">Update</a></Button></td>
-                  <td><Button class="btn btn-danger" >Delete</Button></td>
-                </tr>
-                {%endfor%}
+               
+                  {%for x in data.bookings%}
+                  <tr>
+                    <th scope="row">{{x.ground}}</th>
+                    <td>{{x.team_1}}</td>
+                    <td>{{x.team_2}}</td>
+                    <td>{{x.courtName}}</td>
+                    <td>{{x.date}}</td>
+                    <td>{{x.time}}</td>
+                    <td><Button class="btn btn-info" ><a class="nav-link" href="/editBooking/{{x.bId}}">Update</a></Button></td>
+                    <td><Button class="btn btn-danger" ><a class="nav-link" href="/deleteBooking/{{x.bId}}">Delete</a></Button></td>
+                  </tr>
+                  {%endfor%}
                </tbody>
           </table>
     </div>

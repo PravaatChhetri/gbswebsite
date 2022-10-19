@@ -23,7 +23,7 @@ course=[' 1Arch ',' 1CE ',' 1ECE ',' 1EE ',' 1EG ',' 1ICE ',' 1IT ',' 2Arch ',' 
 court=[]
 
 
-role_status='Admin'
+role_status='User'
 
 
 @app.route('/')
@@ -43,6 +43,10 @@ def get_img(id):
     img=Blogs.query.filter_by(BId=id).first()
     return Response(img.image,mimetype=img.mimetype)
 
+@app.route('/blog/<int:id>')
+def blog_detail(id):
+    blog=Blogs.query.filter_by(BId=id).first()
+    return render_template('blog_disp.html', data={'b': 'active','role_status': role_status,'blog':blog})
 
 @app.route('/booking')
 def booking():
@@ -76,10 +80,15 @@ def editB(id):
         uData.time=form.time.data
         db.session.commit()
         return redirect('/booking')
-        return render_template("editGivenBooking.html",data={'role_status': role_status},detail=detail)
     else:
         return render_template('editGivenBooking.html',data={'role_status': role_status},detail=detail)
 
+@app.route('/deleteBooking/<int:id>')
+def deleteB(id):
+    uData=Bookings.query.get_or_404(id)
+    db.session.delete(uData)
+    db.session.commit()
+    return redirect('/booking')
 
 
 @app.route('/gamesCouncillor-Dashboard', methods=['POST', 'GET'])
@@ -220,7 +229,7 @@ def studentDash():
         booking.team_1.choices=course
         booking.team_2.choices=course
         bk={'booking':booking,'GroundName':GroundName,'courtName':courtName,'date':date,'time':time}
-        detail={'bk':bk}
+        detail={'bk':bk,'uData':None}
         if booking.validate_on_submit():
             GroundName=booking.groundName.data
             courtName=booking.courtName.data
