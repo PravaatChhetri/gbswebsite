@@ -13,6 +13,29 @@
  <!-- blog showcase -->
 <div class="container-fluid">
   <h1 class="text-center fs-1 my-5">Remember Your <b style="color: rgb(255, 123, 0);">Good Old Days</b></h1>
+
+  <div class="container my-5 mx-auto">
+    <div class="row my-3">
+      {%for x in data.blogs %}
+          
+      <div class="col-lg-3 col-sm-12 my-xl-5 mx-3">
+        <div class="card bg-dark" >
+          <img src="/blog/img/{{x.BId}}" class="card-img-top" alt="..." />
+          <div class="card-body">
+            <h5 class="card-title">{{x.title}}</h5>
+            <p class="card-text">
+              {{x.author}}
+            </p>
+            <a href="{{x.date_created}}" class="btn btn-outline-light">Learn More</a>
+          </div>
+        </div>
+      </div>
+      {%endfor%}
+
+    </div>
+
+  </div>
+
 </div>
 
 

@@ -1,6 +1,4 @@
-from email.policy import default
 import mimetypes
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from db import db
 
@@ -11,6 +9,9 @@ class userInfo(db.Model):
     role = db.Column(db.String(10), nullable=False)
     dy = db.Column(db.String(10), nullable=True)
     password=db.Column(db.String(100),nullable=False)
+
+    def __repr__(self):
+        return '<User %r>' % self.dy
 
     def __init__(self, email, role, dy,password):
         self.email = email
@@ -23,6 +24,9 @@ class Grounds(db.Model):
     groundName = db.Column(db.String(100), unique=True, nullable=False)
     NoOfCourt = db.Column(db.Integer, nullable=False)
     bookTime = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return '<Ground %r>' % self.groundName
 
     def __init__(self, groundName, NoOfCourt, bookTime):
         self.groundName = groundName
@@ -37,6 +41,10 @@ class Bookings(db.Model):
     courtName = db.Column(db.String(100), nullable=False)
     date = db.Column(db.Date, nullable=False)
     time = db.Column(db.String(100), nullable=False)
+#    bookedBy=db.Column(db.String(100),nullable=False)
+
+    def __repr__(self):
+        return '<Book ID %r>' % self.bId
 
     def __init__(self, ground, team_1, team_2, courtName, date, time):
         self.ground = ground
@@ -49,12 +57,14 @@ class Bookings(db.Model):
 class Blogs(db.Model):
     BId = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100), nullable=False)
-    content = db.Column(db.String, nullable=False)
+    content = db.Column(db.Text, nullable=False)
     author = db.Column(db.String(100), nullable=False)
-    image = db.Column(db.String, nullable=False)
-    mimetype = db.Column(db.String, nullable=False)
-    date_created = db.Column(
-    db.DateTime, nullable=False, default=datetime.utcnow)
+    image = db.Column(db.Text, nullable=False)
+    mimetype = db.Column(db.Text, nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __repr__(self):
+        return '<Blog %r>' % self.title
 
     def __init__(self, title, content, author, image, mimetype):
         self.title = title

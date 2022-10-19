@@ -12,33 +12,33 @@
       
                   <div class="form-outline mb-3">
                     {{detail.bk.booking.groundName.label(class="text-start")}}
-                    {{detail.bk.booking.groundName(class="form-select bg-dark text-light form-control-lg")}}
+                    {{detail.bk.booking.groundName(class="form-select bg-dark text-light form-control-lg",value=detail.uData.groundName)}}
                   </div>
       
                   <div class="form-outline mb-3">
                     {{detail.bk.booking.courtName.label(class="text-start")}}
-                    {{detail.bk.booking.courtName(class="form-select bg-dark text-light ")}}
+                    {{detail.bk.booking.courtName(class="form-select bg-dark text-light ",value=detail.uData.courtName)}}
                   </div>
                   <div class=" row mb-3">
                     <div class=" form-outline col-4">
                       {{detail.bk.booking.team_1.label(class="text-start")}}
-                      {{detail.bk.booking.team_1(class="form-select bg-dark text-light col-4 form-control-lg")}}
+                      {{detail.bk.booking.team_1(class="form-select bg-dark text-light col-4 form-control-lg", value=detail.uData.team_1)}}
                     </div>
                     <h1 class="text-center col-4 align-content-center">Vs</h1>
                     <div class="form-outline col-4">
                       {{detail.bk.booking.team_2.label(class="text-start")}}
-                      {{detail.bk.booking.team_2(class="form-select bg-dark col-4 text-light form-control-lg")}}
+                      {{detail.bk.booking.team_2(class="form-select bg-dark col-4 text-light form-control-lg", value=detail.uData.team_2)}}
                     </div>
 
                   </div>
                   <div class="row mb-3">
                     <div class="form-outline">
                       {{detail.bk.booking.date.label(class="text-start")}}
-                      {{detail.bk.booking.date(class="form-control mb-3 bg-dark text-light " )}}
+                      {{detail.bk.booking.date(class="form-control mb-3 bg-dark text-light ", value=detail.uData.date )}}
                     </div>
                     <div class="form-outline">
                       {{detail.bk.booking.time.label(class="text-start")}}
-                      {{detail.bk.booking.time(class="form-select mb-3 bg-dark text-light")}}
+                      {{detail.bk.booking.time(class="form-select mb-3 bg-dark text-light", value=detail.uData.time)}}
                     </div>
                   
                   </div>

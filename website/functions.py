@@ -3,7 +3,7 @@ def schedule(time):
     t=60*time
     h=0
     m=0
-    timeSchedule=['0 : 0 AM']
+    timeSchedule=['00: 00 AM']
     while h<23:
         if t>=60:
             min=t%60
@@ -18,12 +18,27 @@ def schedule(time):
                 if m==60:
                     h+=1
                     m=0
-                timeSchedule.append(str(int(h))+' : '+str(m)+' AM');    
+                if m<10:
+                    timeSchedule.append(str(int(h))+' : 0'+str(m)+' AM')
+                elif h<10:
+                    timeSchedule.append('0'+str(int(h))+' : '+str(m)+' AM')
+                elif h<10 and m<10:
+                    timeSchedule.append('0'+str(int(h))+' : 0'+str(m)+' AM')
+                else:
+                    timeSchedule.append(str(int(h))+' : '+str(m)+' AM')
             else:
                 if m==60:
                     h+=1
                     m=0
-                timeSchedule.append(str(int(h%12))+' : '+str(int(m))+' PM')
+
+                if m<10:
+                    timeSchedule.append(str(int(h%12))+' : 0'+str(m)+' AM')
+                elif h<10:
+                    timeSchedule.append('0'+str(int(h%12))+' : '+str(m)+' AM')
+                elif h<10 and m<10:
+                    timeSchedule.append('0'+str(int(h%12))+' : 0'+str(m)+' AM')
+                else:
+                    timeSchedule.append(str(int(h%12))+' : '+str(m)+' AM')        
         else:
             m+=t
     return timeSchedule
