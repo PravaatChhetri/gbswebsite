@@ -23,7 +23,7 @@ course=[' 1Arch ',' 1CE ',' 1ECE ',' 1EE ',' 1EG ',' 1ICE ',' 1IT ',' 2Arch ',' 
 court=[]
 
 
-role_status='User'
+role_status='Admin'
 
 
 @app.route('/')
@@ -37,6 +37,32 @@ def home():
 def blog():
     _blogs=Blogs.query.order_by(Blogs.date_created).all()
     return render_template('blog.html', data={'b': 'active','role_status': role_status,'blogs':_blogs})
+
+@app.route('/editBlog/<int:id>',methods=['GET','POST'])
+def editGivenBlog(id):
+    form=f.BlogForm()
+    _blog=Blogs.query.filter_by(BId=id).first()
+    form.content.data = _blog.content
+    b={'blog':form}
+    detail={'b':b,'bb':_blog}
+    if request.method=='POST':
+        blogPic=form.upload.data
+        if blogPic:
+            _blog.mimetype=blogPic.mimetype
+            _blog.image=blogPic.read()
+        _blog.title=form.title.data
+        _blog.content=form.content.data
+        _blog.author=form.author.data
+        db.session.commit()
+        return redirect(url_for('blog'))
+    return render_template('editGivenBlog.html',data={'role_status': role_status},detail=detail)
+
+@app.route('/deleteBlog/<int:id>')
+def deleteBlog(id):
+    _blog=Blogs.query.filter_by(BId=id).first()
+    db.session.delete(_blog)
+    db.session.commit()
+    return redirect(url_for('blog'))
 
 @app.route('/blog/img/<int:id>')
 def get_img(id):
@@ -132,6 +158,8 @@ def admin():
         booking.team_1.choices=course
         booking.team_2.choices=course
         _booking=Bookings.query.order_by(Bookings.date).all()
+        _blogs=Blogs.query.order_by(Blogs.date_created).all()   
+
 
 
    
@@ -139,7 +167,7 @@ def admin():
         b={'blog':blog,'title':title,'content':content,'author':author,'blogPic':blogPic}
         G={'Ground':Ground,'groundName':groundName,'NoOfCourt':NoOfCourt,'bookTime':bookTime}
         bk={'booking':booking,'GroundName':GroundName,'courtName':courtName,'date':date,'time':time}
-        detail={'register':register,'b':b,'G':G,'bk':bk,'uData':None}
+        detail={'register':register,'b':b,'G':G,'bk':bk,'uData':None,'bb':None}
         if request.method == 'POST':
             if reg.validate_on_submit():
                 email = reg.email.data
@@ -209,7 +237,7 @@ def admin():
                 booking.date.data=''
                 booking.time.data=''
             
-        return render_template('admin_page.html',detail=detail,data={'g':'active','role_status': role_status,'bookings':_booking})
+        return render_template('admin_page.html',detail=detail,data={'g':'active','role_status': role_status,'bookings':_booking,'blogs':_blogs})
     else:
         return redirect(url_for('login'))
 
@@ -230,20 +258,21 @@ def studentDash():
         booking.team_2.choices=course
         bk={'booking':booking,'GroundName':GroundName,'courtName':courtName,'date':date,'time':time}
         detail={'bk':bk,'uData':None}
-        if booking.validate_on_submit():
-            GroundName=booking.groundName.data
-            courtName=booking.courtName.data
-            team_1=booking.team_1.data
-            team_2=booking.team_2.data
-            date=booking.date.data
-            time=booking.time.data
-            print(GroundName,courtName,team_1,team_2,date,time)
-            booking.groundName.data=''
-            booking.courtName.data=''
-            booking.team_1.data=''
-            booking.team_2.data=''
-            booking.date.data=''
-            booking.time.data=''
+        if request.method == 'POST':
+            if booking.validate_on_submit():
+                GroundName=booking.groundName.data
+                courtName=booking.courtName.data
+                team_1=booking.team_1.data
+                team_2=booking.team_2.data
+                date=booking.date.data
+                time=booking.time.data
+                print(GroundName,courtName,team_1,team_2,date,time)
+                booking.groundName.data=''
+                booking.courtName.data=''
+                booking.team_1.data=''
+                booking.team_2.data=''
+                booking.date.data=''
+                booking.time.data=''
 
         return render_template('userDash.html', data={'g':'active','role_status': role_status},detail=detail)
     else:
