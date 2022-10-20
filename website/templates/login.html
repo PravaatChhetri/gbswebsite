@@ -27,20 +27,18 @@
                       <div class="form-outline mb-4">
                         {{form.password.label}}
                         {{form.password(class="form-control bg-dark text-light form-control-lg")}}
+                        <p>
+                        {{form.check(value="Show Password", class="form-check-input")}}
+                          Show Password</p>
+                        
                       </div>
                       <div class="pt-1 mb-4">
                         {{form.submit(class="btn btn-outline-light btn-lg btn-block")}}
+
                       </div>
                      
           
-                      
-                        <!-- <input type="email" id="Email" name="Lemail" class="form-control form-control-lg" />
-                        <label class="form-label" for="Email">Email address</label> -->
-          
-                      <!-- <div class="pt-1 mb-4">
-                        <button class="btn btn-outline-light btn-lg btn-block" type="submit">Login</button>
-                      </div> -->
-          
+      
                       <p class="small mb-5 pb-lg-2"><a class="text-muted" href="#!">Forgot password?</a></p>
           
                     </form>
@@ -54,5 +52,19 @@
           </section>
     </div>
   </div>
+
+  <script>
+    window.addEventListener("load", function(){
+    var checkbox  = document.getElementById('{{form.check.id}}');
+    var x = document.getElementById('{{form.password.id}}');
+    checkbox.addEventListener('change', function() {
+        if(this.checked) {
+            x.type = 'text'; 
+        } else {
+            x.type = 'password'; 
+        }
+    });
+  });
+  </script>
 {%endblock%}
 

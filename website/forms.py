@@ -20,7 +20,8 @@ class RegistrationForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()],id='password')
+    check = BooleanField('Show password', id='check')
     submit = SubmitField('Login')
 
 
