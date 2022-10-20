@@ -51,5 +51,17 @@
       -ms-overflow-style: none;  /* IE and Edge */
       scrollbar-width: none;  /* Firefox */
     }
-    
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+      color: var(--bs-nav-pills-link-active-color);
+      background-color: #ee5d14;
+  }
 
+.nav-link{
+    color: white;
+}
+.navitem{
+  color:black;
+}
+.nav{
+  --bs-nav-link-hover-color: #e5760b;
+}

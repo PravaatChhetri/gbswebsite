@@ -1,6 +1,7 @@
 import sqlite3
 from flask import Flask, redirect, url_for, render_template, request,session,Response
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 from models import userInfo, Grounds, Bookings, Blogs
 import forms as f
 import functions as func
@@ -23,104 +24,123 @@ course=[' 1Arch ',' 1CE ',' 1ECE ',' 1EE ',' 1EG ',' 1ICE ',' 1IT ',' 2Arch ',' 
 court=[]
 
 
-role_status='Admin'
+role_status='None'
 
 
 @app.route('/')
 def home():
     news = api()
-    val = {'news': news, 'a': 'active', 'role_status': role_status}
+    val = {'news': news, 'a': 'active'}
     return render_template('home.html', data=val)
 
 
 @app.route('/blog')
 def blog():
     _blogs=Blogs.query.order_by(Blogs.date_created).all()
-    return render_template('blog.html', data={'b': 'active','role_status': role_status,'blogs':_blogs})
+    return render_template('blog.html', data={'b': 'active','blogs':_blogs})
 
 @app.route('/editBlog/<int:id>',methods=['GET','POST'])
 def editGivenBlog(id):
-    form=f.BlogForm()
-    _blog=Blogs.query.filter_by(BId=id).first()
-    form.content.data = _blog.content
-    b={'blog':form}
-    detail={'b':b,'bb':_blog}
-    if request.method=='POST':
-        blogPic=form.upload.data
-        if blogPic:
-            _blog.mimetype=blogPic.mimetype
-            _blog.image=blogPic.read()
-        _blog.title=form.title.data
-        _blog.content=form.content.data
-        _blog.author=form.author.data
-        db.session.commit()
-        return redirect(url_for('blog'))
-    return render_template('editGivenBlog.html',data={'role_status': role_status},detail=detail)
+    if session['LogAs']=='Admin':
+        form=f.BlogForm()
+        _blog=Blogs.query.filter_by(BId=id).first()
+        form.content.data = _blog.content
+        b={'blog':form}
+        detail={'b':b,'bb':_blog}
+        if request.method=='POST':
+            blogPic=form.upload.data
+            if blogPic:
+                _blog.mimetype=blogPic.mimetype
+                _blog.image=blogPic.read()
+            _blog.title=form.title.data
+            _blog.content=form.content.data
+            _blog.author=form.author.data
+            db.session.commit()
+            return redirect(url_for('blog'))
+        return render_template('editGivenBlog.html',data={'role_status': role_status},detail=detail)
+    else:
+        return redirect(url_for('login'))
+
 
 @app.route('/deleteBlog/<int:id>')
 def deleteBlog(id):
-    _blog=Blogs.query.filter_by(BId=id).first()
-    db.session.delete(_blog)
-    db.session.commit()
-    return redirect(url_for('blog'))
+    if session['LogAs']=='Admin':
+        _blog=Blogs.query.filter_by(BId=id).first()
+        db.session.delete(_blog)
+        db.session.commit()
+        return redirect(url_for('blog'))
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/blog/img/<int:id>')
 def get_img(id):
     img=Blogs.query.filter_by(BId=id).first()
     return Response(img.image,mimetype=img.mimetype)
+    
 
 @app.route('/blog/<int:id>')
 def blog_detail(id):
+        
     blog=Blogs.query.filter_by(BId=id).first()
-    return render_template('blog_disp.html', data={'b': 'active','role_status': role_status,'blog':blog})
+    return render_template('blog_disp.html', data={'b': 'active','blog':blog})
+    
 
 @app.route('/booking')
 def booking():
     _booking=Bookings.query.order_by(Bookings.date).all()
-    return render_template('booking.html', data={'d': 'active','role_status': role_status,'bookings':_booking}) 
+    return render_template('booking.html', data={'d': 'active','bookings':_booking}) 
 
 
 
 @app.route('/editBooking/<int:id>',methods=['GET','POST'])
 def editB(id):
-    form=f.BookingForm()
-    g=Grounds.query.all()
-    ground=[]
-    for x in g:
-        ground.append(x.groundName)
-    form.groundName.choices=ground
-    form.courtName.choices=func.court(3)
-    form.time.choices=func.schedule(1)
-    form.team_1.choices=course
-    form.team_2.choices=course
-    
-    uData=Bookings.query.get_or_404(id)
-    bk={'booking':form}
-    detail={'bk':bk,'uData':uData}
-    if request.method == 'POST':
-        uData.groundName=form.groundName.data
-        uData.team_1=form.team_1.data
-        uData.team_2=form.team_2.data
-        uData.courtName=form.courtName.data
-        uData.date=form.date.data
-        uData.time=form.time.data
-        db.session.commit()
-        return redirect('/booking')
+    if 'role' in session:
+        form=f.BookingForm()
+        g=Grounds.query.all()
+        ground=[]
+        for x in g:
+            ground.append(x.groundName)
+        form.groundName.choices=ground
+        form.courtName.choices=func.court(3)
+        form.time.choices=func.schedule(1)
+        form.team_1.choices=course
+        form.team_2.choices=course
+        
+        uData=Bookings.query.get_or_404(id)
+        bk={'booking':form}
+        detail={'bk':bk,'uData':uData}
+        if request.method == 'POST':
+            checkBook=Bookings.query.all()
+            for x in checkBook:
+                if(x.ground==form.groundName.data and x.courtName==form.courtName.data and x.date==form.date.data and x.time==form.time.data):
+                    print("Booking has been already made")
+                    return redirect('/gamesCouncillor-Dashboard')     
+            uData.groundName=form.groundName.data
+            uData.team_1=form.team_1.data
+            uData.team_2=form.team_2.data
+            uData.courtName=form.courtName.data
+            uData.date=form.date.data
+            uData.time=form.time.data
+            db.session.commit()
+            return redirect('/booking')
+        else:
+            return render_template('editGivenBooking.html',data={'role_status': session['LogAs']},detail=detail)
     else:
-        return render_template('editGivenBooking.html',data={'role_status': role_status},detail=detail)
+        return redirect('/login')
 
 @app.route('/deleteBooking/<int:id>')
 def deleteB(id):
-    uData=Bookings.query.get_or_404(id)
-    db.session.delete(uData)
-    db.session.commit()
-    return redirect('/booking')
+    if 'role' in session:
+        uData=Bookings.query.get_or_404(id)
+        db.session.delete(uData)
+        db.session.commit()
+        return redirect('/booking')
+    return redirect('/login')
 
 
 @app.route('/gamesCouncillor-Dashboard', methods=['POST', 'GET'])
 def admin():
-    if True:
-    #if 'role' in session:
+    if 'role' in session:
         email =None 
         role = None
         dept = None
@@ -218,13 +238,17 @@ def admin():
                 Ground.NoOfCourt.data=''
                 Ground.bookTime.data=''
             if booking.validate_on_submit():
+                checkBook=Bookings.query.all()
+                for x in checkBook:
+                    if(x.ground==booking.groundName and x.courtName==booking.courtName.data and x.date==booking.date.data and x.time==booking.time.data):
+                        print("Booking has been already made")
+                        return render_template('gamesCouncillor-Dashboard.html',data={'g':'active','role_status': role_status,'bookings':_booking,'blogs':_blogs},detail=detail)
                 GroundName=booking.groundName.data
                 courtName=booking.courtName.data
                 team_1=booking.team_1.data
                 team_2=booking.team_2.data
                 date=booking.date.data
                 time=booking.time.data
-                print(GroundName,courtName,team_1,team_2,date,time)
                 b=Bookings(ground=GroundName,courtName=courtName,team_1=team_1,team_2=team_2,date=date,time=time)
                 db.session.add(b)
                 db.session.commit()
@@ -236,15 +260,15 @@ def admin():
                 booking.team_2.data=''
                 booking.date.data=''
                 booking.time.data=''
+                return render_template('admin_page.html',detail=detail,data={'g':'active','role_status': session['LogAs'],'bookings':_booking,'blogs':_blogs})
             
-        return render_template('admin_page.html',detail=detail,data={'g':'active','role_status': role_status,'bookings':_booking,'blogs':_blogs})
+        return render_template('admin_page.html',detail=detail,data={'g':'active','role_status': session['LogAs'],'bookings':_booking,'blogs':_blogs})
     else:
         return redirect(url_for('login'))
 
-@app.route('/User-Dashboard')
+@app.route('/User-Dashboard', methods=['POST', 'GET'])
 def studentDash():
-    if True:
-    #if "role" in session:
+    if "role" in session:
         GroundName=None
         courtName=None
         team_1=None
@@ -252,14 +276,35 @@ def studentDash():
         date=None
         time=None
         booking=f.BookingForm()
+        g=Grounds.query.all()
+        ground=[]
+        for x in g:
+            ground.append(x.groundName)
+        booking.groundName.choices=ground
         booking.courtName.choices=func.court(3)
         booking.time.choices=func.schedule(1)
         booking.team_1.choices=course
         booking.team_2.choices=course
+        booking.team_1.data=str(session['role'])
+     #   _booking= db.session.execute(db.select(Bookings).filter(or_(Bookings.team_1.like(session['role']), Bookings.team_2.like(session['role'])))).scalars()
+        nb=Bookings.query.all()
+        _booking=[]
+        for x in nb:
+            y=int(x.team_1.find(session["role"]))+int(x.team_2.find(session["role"]))
+            if(y==0):
+                _booking.append(x)
+     
+        role=session['role']
+        uData={'team_1':role}
         bk={'booking':booking,'GroundName':GroundName,'courtName':courtName,'date':date,'time':time}
-        detail={'bk':bk,'uData':None}
+        detail={'bk':bk,'uData':uData}
         if request.method == 'POST':
             if booking.validate_on_submit():
+                checkBook=Bookings.query.all()
+                for x in checkBook:
+                    if(x.ground==booking.groundName and x.courtName==booking.courtName.data and x.date==booking.date.data and x.time==booking.time.data):
+                        print("Booking has been already made")
+                        return render_template('userDash.html',data={'g':'active','role_status': session['LogAs'],'bookings':_booking,},detail=detail)
                 GroundName=booking.groundName.data
                 courtName=booking.courtName.data
                 team_1=booking.team_1.data
@@ -267,6 +312,9 @@ def studentDash():
                 date=booking.date.data
                 time=booking.time.data
                 print(GroundName,courtName,team_1,team_2,date,time)
+                b=Bookings(ground=GroundName,courtName=courtName,team_1=team_1,team_2=team_2,date=date,time=time)
+                db.session.add(b)
+                db.session.commit()
                 booking.groundName.data=''
                 booking.courtName.data=''
                 booking.team_1.data=''
@@ -274,14 +322,14 @@ def studentDash():
                 booking.date.data=''
                 booking.time.data=''
 
-        return render_template('userDash.html', data={'g':'active','role_status': role_status},detail=detail)
+        return render_template('userDash.html', data={'g':'active','role_status': session['LogAs'],'bookings':_booking},detail=detail,dept=session['role'])
     else:
         return redirect(url_for('login'))
 
 
 @app.route('/aboutUs')
 def aboutUs():
-    return render_template('about_us.html', data={'e': 'active','role_status': role_status})
+    return render_template('about_us.html', data={'e': 'active'})
 
 
 @app.route('/login', methods=['POST', 'GET'])
@@ -290,16 +338,30 @@ def login():
     password = None
     form = f.LoginForm()
     if request.method == 'POST':
-       
         if form.validate_on_submit():
-            session['role']='Admin'
+            u=userInfo.query.all()
             email = form.email.data
-        
             password = form.password.data
+            for x in u:
+                if(x.email==form.email.data and x.password==form.password.data):
+                    session['role']=x.dy
+                    session['email']=x.email
+                    if(x.role=='Admin'):
+                        session['LogAs']='Admin'
+                        role_status=session['LogAs']
+
+                        return redirect(url_for('admin'))
+                    else:
+                        session['LogAs']='User'
+                        role_status=session['LogAs']
+                        return redirect(url_for('studentDash'))
+
+            
             form.email.data = ''
             form.password.data = ''
             print(email,password)
-    return render_template('login.html', data={'f': 'active','role_status': role_status}, form=form, email=email, password=password)
+
+    return render_template('login.html', data={'f': 'active','n':'navitem' }, form=form, email=email, password=password)
 
 def api():
     url = ('https://newsapi.org/v2/top-headlines?'
@@ -311,7 +373,9 @@ def api():
 
 @app.route("/logout")     
 def logout():
-    session.pop('role', None)
+    session.pop('role',None)
+    session.pop('LogAs',None)
+    session.pop('email', None)
     return redirect(url_for('login'))
     
 

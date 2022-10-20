@@ -35,7 +35,8 @@
           <li class="nav-item px-lg-3 ">
             <a class="nav-link {{data.g}}" href="/gamesCouncillor-Dashboard">Admin-DashBoard</a>
           </li>
-          {%elif data.role_status=='User'%}
+          {%endif%}
+          {%if data.role_status=='User'%}
           <li class="nav-item px-lg-3 ">
             <a class="nav-link {{data.g}}" href="/User-Dashboard">DashBoard</a>
           </li>
@@ -55,8 +56,13 @@
           </li>
         </ul>
         <form action="" class="d-flex">
-          <button class="nav-item {{data.f}} btn btn-outline-light fs-4 ">
-            <a href="/login" class="nav-link">Login</a>
+          <button class="nav-item {{data.f}} {{data.n}} btn btn-outline-light fs-4 ">
+            {%if data.role_status=='User' or data.role_status=='Admin'%}
+            <a href="/logout" class="nav-link ">Logout</a>
+            {%else%}
+            <a href="/login" class="nav-link ">Login</a>
+            {%endif%}
+
           </button>
         </form>
       </div>
