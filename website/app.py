@@ -30,14 +30,14 @@ role_status='None'
 @app.route('/')
 def home():
     news = api()
-    val = {'news': news, 'a': 'active'}
+    val = {'news': news,'role_status':session['LogAs'], 'a': 'active'}
     return render_template('home.html', data=val)
 
 
 @app.route('/blog')
 def blog():
     _blogs=Blogs.query.order_by(Blogs.date_created).all()
-    return render_template('blog.html', data={'b': 'active','blogs':_blogs})
+    return render_template('blog.html', data={'b': 'active','role_status':session['LogAs'],'blogs':_blogs})
 
 @app.route('/editBlog/<int:id>',methods=['GET','POST'])
 def editGivenBlog(id):
@@ -57,7 +57,7 @@ def editGivenBlog(id):
             _blog.author=form.author.data
             db.session.commit()
             return redirect(url_for('blog'))
-        return render_template('editGivenBlog.html',data={'role_status': role_status},detail=detail)
+        return render_template('editGivenBlog.html',data={'role_status': session['LogAs']},detail=detail)
     else:
         return redirect(url_for('login'))
 
@@ -82,13 +82,13 @@ def get_img(id):
 def blog_detail(id):
         
     blog=Blogs.query.filter_by(BId=id).first()
-    return render_template('blog_disp.html', data={'b': 'active','blog':blog})
+    return render_template('blog_disp.html', data={'b': 'active','role_status':session['LogAs'],'blog':blog})
     
 
 @app.route('/booking')
 def booking():
     _booking=Bookings.query.order_by(Bookings.date).all()
-    return render_template('booking.html', data={'d': 'active','bookings':_booking}) 
+    return render_template('booking.html', data={'d': 'active','role_status':session['LogAs'],'bookings':_booking}) 
 
 
 
@@ -322,14 +322,14 @@ def studentDash():
                 booking.date.data=''
                 booking.time.data=''
 
-        return render_template('userDash.html', data={'g':'active','role_status': session['LogAs'],'bookings':_booking},detail=detail,dept=session['role'])
+        return render_template('userDash.html', data={'g':'active','role_status': session['LogAs'],'bookings':_booking},detail=detail)
     else:
         return redirect(url_for('login'))
 
 
 @app.route('/aboutUs')
 def aboutUs():
-    return render_template('about_us.html', data={'e': 'active'})
+    return render_template('about_us.html', data={'e': 'active','role_status': session['LogAs']})
 
 
 @app.route('/login', methods=['POST', 'GET'])
