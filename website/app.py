@@ -1,4 +1,5 @@
 from flask import Flask, redirect, url_for, render_template, request,session,Response, flash
+from flask_mail import * 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from models import userInfo, Grounds, Bookings, Blogs
@@ -14,6 +15,17 @@ app = Flask (__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///gbsDB.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'groundbookingsystem'
+
+app.config['MAIL_SERVER']='smtp.gmail.com'  
+app.config['MAIL_PORT']=465  
+app.config['MAIL_USERNAME'] = 'gamescouncillorcst@gmail.com'  
+app.config['MAIL_PASSWORD'] = 'GamesCouncillor'  
+app.config['MAIL_USE_TLS'] = False  
+app.config['MAIL_USE_SSL'] = True  
+
+mail = Mail(app) 
+
+
 
 db_init(app)
 
@@ -115,6 +127,11 @@ def editB(id):
         form.team_2.choices=course
         
         uData=Bookings.query.get_or_404(id)
+
+        # u1=userInfo.query.get_or_404(team_1=uData.team_1)
+        # u2=userInfo.query.get_or_404(team_2=uData.team_2)
+        # print(u1, u2)
+        # print(u1.email, u2.email)
         bk={'booking':form}
         detail={'bk':bk,'uData':uData}
         if request.method == 'POST':
@@ -141,9 +158,14 @@ def editB(id):
 def deleteB(id):
     if 'role' in session:
         uData=Bookings.query.get_or_404(id)
-        db.session.delete(uData)
+        # u1=userInfo.query.get_or_404(team_1=uData.team_1)
+        # u2=userInfo.query.get_or_404(team_2=uData.team_2)
+        # print(u1, u2)
+        # print(u1.email, u2.email)
+        # db.session.delete(uData)
         db.session.commit()
         flash("Booking has been deleted successfully",'success')
+        # deleteMail()
         return redirect('/booking')
     return redirect('/login')
 
@@ -262,6 +284,10 @@ def admin():
                 db.session.add(b)
                 db.session.commit()
                 flash("Booking has been made",'success')
+                # u1=userInfo.query.get_or_404(booking.team_1.data)
+                # u2=userInfo.query.get_or_404(booking.team_2.data)
+                # print(u1, u2)
+                # print(u1.email, u2.email)
                 booking.groundName.data=''
                 booking.courtName.data=''
                 booking.team_1.data=''
@@ -323,6 +349,11 @@ def studentDash():
                 db.session.add(b)
                 db.session.commit()
                 flash('Booking has been made','success')
+                # u1=userInfo.query.get_or_404(team_1=uData.team_1)
+                # u2=userInfo.query.get_or_404(team_2=uData.team_2)
+                # print(u1, u2)
+                # print(u1.email, u2.email)
+
                 booking.groundName.data=''
                 booking.courtName.data=''
                 booking.team_1.data=''
@@ -389,7 +420,30 @@ def logout():
     session.pop('email', None)
     flash('Successfully logged out', 'success')
     return redirect(url_for('login'))
-    
+
+@app.route('/mail')
+def mail(reciever,sub,body):
+    msg = Message(sub, sender = 'gamescouncillorcst@gmail.com', recipients=reciever)  
+    msg.body = body  
+    return flash('Mail has been sent','success')  
+
+@app.route('/bookMail')
+def bookingMail(time,recipents):
+    sub='Booking Confirmation'
+    body='Your booking for '+time+' has been confirmed'+'\n\n Games Councillor \n College of Science and Technology \n Rinchending, Thimphu'
+    mail(recipents,sub,body)
+
+@app.route('/UpdateMail')
+def updateMail(time,recipents):
+    sub='Booking Update'
+    body='Your booking for '+time+' has been updated'+'\n\n Games Councillor \n College of Science and Technology \n Rinchending, Thimphu'
+    mail(recipents,sub,body)
+
+@app.route('/CancelMail')
+def deleteMail(time,recipents):
+    sub='Booking Cancelled'
+    body='Your booking for '+time+' has been cancelled'+'\n\n Games Councillor \n College of Science and Technology \n Rinchending, Thimphu'
+    mail(recipents,sub,body)
 
 if __name__ == "__main__":
     
