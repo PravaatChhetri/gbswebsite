@@ -332,7 +332,8 @@ def studentDash():
         bk={'booking':booking,'GroundName':GroundName,'courtName':courtName,'date':date,'time':time}
         detail={'bk':bk,'uData':uData}
         if request.method == 'POST':
-            if booking.validate_on_submit():
+                print('Error Clear')
+
                 checkBook=Bookings.query.all()
                 for x in checkBook:
                     if(x.ground==booking.groundName and x.courtName==booking.courtName.data and x.date==booking.date.data and x.time==booking.time.data):
@@ -369,7 +370,7 @@ def studentDash():
 @app.route('/aboutUs')
 def aboutUs():
     if "role" in session:
-        return render_template('aboutUs.html',data={'a':'active','role_status': session['LogAs']})
+        return render_template('about_us.html',data={'a':'active','role_status': session['LogAs']})
     else:
         return render_template('about_us.html', data={'e': 'active'})
 
