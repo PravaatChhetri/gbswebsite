@@ -162,7 +162,7 @@ def deleteB(id):
         # u2=userInfo.query.get_or_404(team_2=uData.team_2)
         # print(u1, u2)
         # print(u1.email, u2.email)
-        # db.session.delete(uData)
+        db.session.delete(uData)
         db.session.commit()
         flash("Booking has been deleted successfully",'success')
         # deleteMail()
@@ -211,8 +211,6 @@ def admin():
         booking.team_2.choices=course
         _booking=Bookings.query.order_by(Bookings.date).all()
         _blogs=Blogs.query.order_by(Blogs.date_created).all()   
-
-
 
    
         register={'reg':reg,'email':email,'role':role,'dept':dept,'year':year}
@@ -323,8 +321,10 @@ def studentDash():
         nb=Bookings.query.all()
         _booking=[]
         for x in nb:
+            y=0
             y=int(x.team_1.find(session["role"]))+int(x.team_2.find(session["role"]))
-            if(y==0):
+            print(x.team_1,x.team_2,y)
+            if(y>=-1):
                 _booking.append(x)
      
         role=session['role']
@@ -332,7 +332,6 @@ def studentDash():
         bk={'booking':booking,'GroundName':GroundName,'courtName':courtName,'date':date,'time':time}
         detail={'bk':bk,'uData':uData}
         if request.method == 'POST':
-                print('Error Clear')
 
                 checkBook=Bookings.query.all()
                 for x in checkBook:
